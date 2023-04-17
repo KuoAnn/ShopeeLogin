@@ -18,17 +18,14 @@
 
 以下為映像最新的 tag。其他可用的 tag 請參考 Docker Hub 或 GitHub Container Registry 頁面。
 
-- `latest`, `1`, `1.1`, `1.1.0`
-- `kelly`, `kelly-1`, `kelly-1.1`, `kelly-1.1.0`
-
-映像 `kelly` 不含中文字型，其體積比一般映像小約 70 MiB。如果沒有截圖的需求，建議使用 `kelly`。
+- `latest`, `1`, `1.2`, `1.2.1`
 
 ### 使用說明
 
 傳入 `--help` 可以印出使用說明。
 
 ```sh
-docker run -it hyperbola/shopee-coins-bot:1 --help
+docker run hyperbola/shopee-coins-bot:1 --help
 ```
 
 ### 帳號密碼登入
@@ -36,20 +33,20 @@ docker run -it hyperbola/shopee-coins-bot:1 --help
 第一次使用時，需要提供蝦皮帳號密碼，並且強烈建議設定機器人登入後儲存 cookie 的位置，以備未來機器人能夠執行自動登入。如果你不指定一個 cookie 的位置，那未來每次登入都會需要帳號與密碼。
 
 ```sh
-docker run -it -v /path/to/somewhere:/cookie \
+docker run -v /path/to/somewhere:/cookie \
     hyperbola/shopee-coins-bot:1 -u username -p password -c /cookie
 ```
 
 > **Warning**
 >
-> 機器人進行登入期間，你可能會收到來自 shopee 的手機驗證簡訊，其中會有一個驗證登入的連結。請在 10 分鐘內進行驗證，在這期間機器人會等你。一旦你點了驗證簡訊後，機器人會立即繼續執行下去。
+> 機器人進行登入期間，你可能會收到來自 shopee 的 Email 或手機驗證簡訊，其中會有一個驗證登入的連結。請在 10 分鐘內進行驗證，在這期間機器人會等你。一旦你點了驗證簡訊後，機器人會立即繼續執行下去。
 
 ### 自動登入
 
 如果之前有儲存過 cookie，用 cookie 登入即可，這樣就不會觸發簡訊驗證。
 
 ```sh
-docker run -it -v /path/to/somewhere:/cookie hyperbola/shopee-coins-bot:1 -c /cookie
+docker run -v /path/to/somewhere:/cookie hyperbola/shopee-coins-bot:1 -c /cookie
 ```
 
 ## 參數
@@ -57,11 +54,12 @@ docker run -it -v /path/to/somewhere:/cookie hyperbola/shopee-coins-bot:1 -c /co
 所有參數都是選填。
 
 - `-u`, `--user <STRING>`: 蝦皮帳號；可以是手機、電子信箱或蝦皮 ID
-- `-p`, `--pass <STRING>`: 蝦皮密碼
+- ~~`-p`, `--pass <STRING>`: 蝦皮密碼~~ **DEPRECATED**
 - `-P`, `--path-to-pass <FILE>`: 密碼檔案
 - `-c`, `--cookie <FILE>`: cookie 檔案
-- ~~`-i`, `--ignore-password`: 不要儲存密碼~~ **Deprecated**
+- ~~`-i`, `--ignore-password`: 不要儲存密碼~~ **DEPRECATED**
 - `-x`, `--no-sms`: 如果觸發簡訊驗證，直接令程式以失敗結束；預設為 `false`
+- `-y`, `--no-email`: 如果觸發電子郵件驗證，直接令程式以失敗結束；預設為 `false`
 - `-f`, `--force`: 如果今天已經領過蝦幣，令程式以成功作收；預設為 `false`
 - `-q`, `--quiet`: 不要印出訊息；但仍會印出警告與錯誤訊息
 - `-s`, `--screenshot <DIR>`: 簽到失敗時將螢幕截圖的儲存於指定資料夾下（圖檔檔名為 screenshot.png）
@@ -92,7 +90,7 @@ Cookie 檔案的位置以下列優先順序決定。
 密碼以下列優先順序決定。
 
 1. 環境變數 `PASSWORD`
-2. 程式參數 `--pass`
+2. ~~程式參數 `--pass`~~ **DEPRECATED**
 3. 環境變數 `PATH_PASS`
 4. 程式參數 `--path-to-pass`
 
@@ -105,8 +103,9 @@ Cookie 檔案的位置以下列優先順序決定。
 | 2         | 需要簡訊驗證，但你傳了 `--no-sms` 參數。 |
 | 3         | 機器人遇到拼圖遊戲，但是它不會玩🥺🥺<br> 這通常是因為嘗試登入次數太多，被網站 ban 掉。 |
 | 4         | 操作逾時。 |
-| 5         | 觸發電子郵件驗證。機器人尚不支援。 |
+| ~~5~~     | ~~觸發電子郵件驗證。機器人尚不支援。~~ **DEPRECATED** |
 | 6         | 使用者進行簡訊驗證時選擇拒絕機器人登入。 |
+| 7         | 需要電子郵件驗證，但你傳了 `--no-email` 參數。 |
 | 69        | 嘗試登入次數太多被 ban。 |
 | 77        | 參數不合法。 |
 | 87        | 帳號或密碼錯誤。 |
